@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# James Bond Ping Mission
 
-## Getting Started
+A secure web application where authenticated users can send pings with random coordinates, view their ping history, and respond to pings to form a trail.
 
-First, run the development server:
+## Tech Stack
+
+- **Framework:** Next.js 15 (App Router, TypeScript)
+- **Auth:** Clerk
+- **Database:** Supabase (PostgreSQL via Drizzle ORM)
+- **Styling:** Tailwind CSS + shadcn/ui
+- **Testing:** Jest + React Testing Library
+
+## Prerequisites
+
+- Node.js 20+
+- pnpm (`npm install -g pnpm`)
+- A [Clerk](https://clerk.com) account
+- A [Supabase](https://supabase.com) project
+
+## Local Setup
+
+### 1. Clone and install
+
+```bash
+git clone <repo-url>
+cd james-bond-ping
+pnpm install
+```
+
+### 2. Configure environment variables
+
+```bash
+cp .env.example .env.local
+```
+
+Fill in `.env.local`:
+
+| Variable                            | Where to find it                                                  |
+| ----------------------------------- | ----------------------------------------------------------------- |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk Dashboard → API Keys                                        |
+| `CLERK_SECRET_KEY`                  | Clerk Dashboard → API Keys                                        |
+| `DATABASE_URL`                      | Supabase → Settings → Database → Session pooler connection string |
+
+> **Note:** Use the **Session pooler** URL from Supabase (port 5432, host `*.pooler.supabase.com`), not the direct connection. URL-encode any special characters in your password (`#` → `%23`, `+` → `%2B`).
+
+### 3. Run database migrations
+
+```bash
+pnpm db:migrate
+```
+
+### 4. Start the dev server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## API Routes
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Method | Route               | Description                          |
+| ------ | ------------------- | ------------------------------------ |
+| `POST` | `/api/pings`        | Create a new ping                    |
+| `GET`  | `/api/pings`        | Get all pings for the logged-in user |
+| `GET`  | `/api/pings/latest` | Get the latest 3 pings               |
+| `POST` | `/api/pings/:id`    | Reply to a ping (trail creation)     |
 
-## Learn More
+All routes require authentication. Unauthenticated requests return `401`.
 
-To learn more about Next.js, take a look at the following resources:
+## Running Tests
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm test
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Key Commands
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run dev          # Start dev server
+npm run build        # Production build
+npm run lint         # ESLint + Prettier check
+npm run typecheck    # TypeScript check
+npm test             # Run tests
+pnpm db:generate     # Generate Drizzle migrations
+pnpm db:migrate      # Apply migrations to Supabase
+pnpm db:studio       # Open Drizzle Studio (database GUI)
+```
