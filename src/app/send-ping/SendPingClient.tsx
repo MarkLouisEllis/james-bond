@@ -32,8 +32,19 @@ export default function SendPingClient({ latestPing }: { latestPing: Ping | null
   const [lastParent, setLastParent] = useState<PingResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [pinging, setPinging] = useState(false);
+  const [switchSonar, setSwitchSonar] = useState(false);
+
+  function handleSwitchChange(checked: boolean) {
+    setReplyMode(checked);
+    setSwitchSonar(true);
+    setTimeout(() => setSwitchSonar(false), 1000);
+  }
 
   async function sendPing() {
+    setPinging(true);
+    setTimeout(() => setPinging(false), 1000);
+
     setLoading(true);
     setError(null);
 
@@ -58,9 +69,15 @@ export default function SendPingClient({ latestPing }: { latestPing: Ping | null
 
   return (
     <div className="flex flex-col items-center gap-4 w-full max-w-sm">
-      <Button onClick={sendPing} disabled={loading} className="w-40 cursor-pointer">
-        {loading ? 'Sending…' : replyMode ? 'Send Reply' : 'Send Ping'}
-      </Button>
+      <div className="relative inline-flex">
+        <Button onClick={sendPing} disabled={loading} className="w-40 cursor-pointer">
+          {loading ? 'Sending…' : replyMode ? 'Send Reply' : 'Send Ping'}
+        </Button>
+        {pinging && (
+          <span className="absolute inset-0 rounded-md animate-ping bg-emerald-400/25 pointer-events-none" />
+        )}
+      </div>
+
       {currentLatest && (
         <>
           <MiniPingCard
@@ -83,7 +100,12 @@ export default function SendPingClient({ latestPing }: { latestPing: Ping | null
             </>
           )}
           <label className="flex items-center gap-3 cursor-pointer select-none">
-            <Switch checked={replyMode} onCheckedChange={setReplyMode} />
+            <div className="relative inline-flex items-center justify-center">
+              <Switch checked={replyMode} onCheckedChange={handleSwitchChange} />
+              {switchSonar && (
+                <span className="absolute w-10 h-10 rounded-full border-2 border-emerald-400/60 animate-ping pointer-events-none" />
+              )}
+            </div>
             <span className="text-sm text-zinc-300">
               Reply to Ping <span className="font-mono text-white">#{currentLatest.id}</span>
             </span>
