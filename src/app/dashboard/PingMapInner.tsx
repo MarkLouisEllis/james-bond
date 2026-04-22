@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import type { Ping } from '@/db/schema';
+import type { PingWithSeq } from '@/db/pings';
 
 const COLORS = ['#22d3ee', '#86efac', '#f472b6'];
 
@@ -29,7 +29,7 @@ function MapController({
   onPixelsChange,
   onMovingChange,
 }: {
-  pings: Ping[];
+  pings: PingWithSeq[];
   onPixelsChange: (px: Record<number, { x: number; y: number }>) => void;
   onMovingChange: (moving: boolean) => void;
 }) {
@@ -72,7 +72,7 @@ function MapController({
   return null;
 }
 
-export default function PingMapInner({ pings }: { pings: Ping[] }) {
+export default function PingMapInner({ pings }: { pings: PingWithSeq[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<Record<number, HTMLDivElement | null>>({});
   const [markerPixels, setMarkerPixels] = useState<Record<number, { x: number; y: number }>>({});
@@ -95,7 +95,7 @@ export default function PingMapInner({ pings }: { pings: Ping[] }) {
       };
     }
     setCardEndpoints(endpoints);
-  }, [pings]);
+  }, [pings, markerPixels]);
 
   return (
     <div
@@ -106,8 +106,8 @@ export default function PingMapInner({ pings }: { pings: Ping[] }) {
       <MapContainer
         center={[20, 0]}
         zoom={2}
-        minZoom={2}
-        maxZoom={18}
+        minZoom={1.2}
+        maxZoom={20}
         maxBounds={WORLD_BOUNDS}
         maxBoundsViscosity={0.85}
         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
@@ -136,7 +136,7 @@ export default function PingMapInner({ pings }: { pings: Ping[] }) {
       {/* SVG lines — above map, below cards */}
       <svg
         className="absolute inset-0 w-full h-full pointer-events-none"
-        style={{ zIndex: 900, opacity: isMoving ? 0 : 1, transition: 'opacity 0.15s ease' }}
+        style={{ zIndex: 599, opacity: isMoving ? 0 : 1, transition: 'opacity 0.15s ease' }}
       >
         {pings.map((ping, i) => {
           const marker = markerPixels[ping.id];
@@ -160,6 +160,20 @@ export default function PingMapInner({ pings }: { pings: Ping[] }) {
           );
         })}
       </svg>
+
+      {/* Empty state overlay */}
+      {pings.length === 0 && (
+        <div
+          className="absolute inset-0 flex flex-col items-center justify-center gap-3 pointer-events-none"
+          style={{ zIndex: 1000 }}
+        >
+          <div className="w-3 h-3 rounded-full bg-emerald-400 animate-ping" />
+          <p className="text-emerald-400 text-sm font-mono tracking-wide">No signal detected.</p>
+          <p className="text-emerald-600 text-xs font-mono">
+            Send your first ping to begin the mission.
+          </p>
+        </div>
+      )}
 
       {/* Overlay cards — top-right corner */}
       <div className="absolute top-3 right-3 flex flex-col gap-2" style={{ zIndex: 1000 }}>
@@ -186,7 +200,7 @@ export default function PingMapInner({ pings }: { pings: Ping[] }) {
                 className="text-[9px] sm:text-[10px] font-mono uppercase tracking-widest mb-1"
                 style={{ color }}
               >
-                Ping #{ping.id}
+                Ping #{ping.seqNum}
               </div>
               <div className="text-[10px] sm:text-xs text-zinc-300 font-mono leading-relaxed">
                 <div>{Number(ping.latitude).toFixed(4)}°</div>

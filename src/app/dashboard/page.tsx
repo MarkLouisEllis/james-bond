@@ -1,6 +1,5 @@
 import { Suspense } from 'react';
 import { currentUser } from '@clerk/nextjs/server';
-import Link from 'next/link';
 import Nav from '@/components/Nav';
 import LatestPings from './LatestPings';
 import LatestPingsSkeleton from './LatestPingsSkeleton';
@@ -26,21 +25,6 @@ export default async function DashboardPage() {
         <Suspense fallback={<LatestPingsSkeleton />}>
           <LatestPings />
         </Suspense>
-      </div>
-
-      <div className="px-4 sm:px-8 mt-8 pb-10 flex gap-4">
-        <Link
-          href="/send-ping"
-          className="text-sm bg-white text-black px-4 py-2 rounded font-medium hover:bg-zinc-200 transition"
-        >
-          Send Ping
-        </Link>
-        <Link
-          href="/all-pings"
-          className="text-sm border border-zinc-600 px-4 py-2 rounded text-zinc-300 hover:border-zinc-400 transition"
-        >
-          All Pings
-        </Link>
       </div>
     </div>
   );
