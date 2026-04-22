@@ -3,6 +3,7 @@ import { requireUserId } from '@/lib/auth';
 import { randomCoords } from '@/lib/coords';
 import { createPing, listPingsForUser } from '@/db/pings';
 
+// This GET handler is not used as the pings are fetched directly in server components, but it's here for completeness and potential future use.
 export async function GET(_req: Request) {
   let userId: string;
   try {
