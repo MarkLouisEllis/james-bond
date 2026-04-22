@@ -14,6 +14,7 @@ const { getPingById, createPing } = jest.requireMock('@/db/pings');
 
 const ownPing = {
   id: 1,
+  seqNum: 1,
   userId: 'u1',
   latitude: 10,
   longitude: 20,
@@ -28,11 +29,12 @@ function makeRequest(id: string) {
 describe('POST /api/pings/[id]', () => {
   beforeEach(() => jest.clearAllMocks());
 
-  it('creates a child ping with parentId set when replying to own ping', async () => {
+  it('creates a child ping with parentId and seqNum when replying to own ping', async () => {
     requireUserId.mockResolvedValue('u1');
     getPingById.mockResolvedValue(ownPing);
     createPing.mockResolvedValue({
       id: 2,
+      seqNum: 2,
       userId: 'u1',
       latitude: 51.5,
       longitude: -0.12,
@@ -44,6 +46,7 @@ describe('POST /api/pings/[id]', () => {
     expect(res.status).toBe(201);
     const body = await res.json();
     expect(body.parentId).toBe(1);
+    expect(body.seqNum).toBe(2);
     expect(createPing).toHaveBeenCalledWith(expect.objectContaining({ parentId: 1 }));
   });
 

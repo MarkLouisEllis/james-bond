@@ -10,14 +10,30 @@ const { requireUserId } = jest.requireMock('@/lib/auth');
 const { listPingsForUser } = jest.requireMock('@/db/pings');
 
 const mockPings = [
-  { id: 5, userId: 'u1', latitude: 10, longitude: 20, parentId: null, createdAt: new Date() },
-  { id: 4, userId: 'u1', latitude: 30, longitude: 40, parentId: null, createdAt: new Date() },
+  {
+    id: 5,
+    seqNum: 2,
+    userId: 'u1',
+    latitude: 10,
+    longitude: 20,
+    parentId: null,
+    createdAt: new Date(),
+  },
+  {
+    id: 4,
+    seqNum: 1,
+    userId: 'u1',
+    latitude: 30,
+    longitude: 40,
+    parentId: null,
+    createdAt: new Date(),
+  },
 ];
 
 describe('GET /api/pings', () => {
   beforeEach(() => jest.clearAllMocks());
 
-  it('returns all pings for the authenticated user', async () => {
+  it('returns all pings with seqNum for the authenticated user', async () => {
     requireUserId.mockResolvedValue('u1');
     listPingsForUser.mockResolvedValue(mockPings);
 
@@ -25,7 +41,8 @@ describe('GET /api/pings', () => {
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body).toHaveLength(2);
-    expect(body[0].id).toBe(5);
+    expect(body[0].seqNum).toBe(2);
+    expect(body[1].seqNum).toBe(1);
   });
 
   it('returns 401 when not authenticated', async () => {
