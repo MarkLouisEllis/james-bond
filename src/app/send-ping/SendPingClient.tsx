@@ -4,19 +4,21 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import MiniPingCard from '@/components/MiniPingCard';
-import type { Ping } from '@/db/schema';
+import type { PingWithSeq } from '@/db/pings';
 
 type PingResult = {
   id: number;
+  seqNum: number;
   latitude: number;
   longitude: number;
   createdAt: string;
   parentId: number | null;
 };
 
-function toPingResult(ping: Ping): PingResult {
+function toPingResult(ping: PingWithSeq): PingResult {
   return {
     id: ping.id,
+    seqNum: ping.seqNum,
     latitude: Number(ping.latitude),
     longitude: Number(ping.longitude),
     createdAt: new Date(ping.createdAt).toISOString(),
@@ -24,7 +26,7 @@ function toPingResult(ping: Ping): PingResult {
   };
 }
 
-export default function SendPingClient({ latestPing }: { latestPing: Ping | null }) {
+export default function SendPingClient({ latestPing }: { latestPing: PingWithSeq | null }) {
   const [currentLatest, setCurrentLatest] = useState<PingResult | null>(
     latestPing ? toPingResult(latestPing) : null
   );
@@ -81,7 +83,7 @@ export default function SendPingClient({ latestPing }: { latestPing: Ping | null
       {currentLatest && (
         <>
           <MiniPingCard
-            id={currentLatest.id}
+            seqNum={currentLatest.seqNum}
             latitude={currentLatest.latitude}
             longitude={currentLatest.longitude}
             createdAt={currentLatest.createdAt}
@@ -91,7 +93,7 @@ export default function SendPingClient({ latestPing }: { latestPing: Ping | null
             <>
               <div className="w-px h-6 bg-zinc-600" />
               <MiniPingCard
-                id={lastParent.id}
+                seqNum={lastParent.seqNum}
                 latitude={lastParent.latitude}
                 longitude={lastParent.longitude}
                 createdAt={lastParent.createdAt}
@@ -107,7 +109,7 @@ export default function SendPingClient({ latestPing }: { latestPing: Ping | null
               )}
             </div>
             <span className="text-sm text-zinc-300">
-              Reply to Ping <span className="font-mono text-white">#{currentLatest.id}</span>
+              Reply to Ping <span className="font-mono text-white">#{currentLatest.seqNum}</span>
             </span>
           </label>
         </>

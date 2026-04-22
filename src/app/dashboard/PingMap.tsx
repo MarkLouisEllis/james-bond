@@ -1,7 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import type { Ping } from '@/db/schema';
+import type { PingWithSeq } from '@/db/pings';
 
 const PingMapInner = dynamic(() => import('./PingMapInner'), {
   ssr: false,
@@ -12,6 +12,6 @@ const PingMapInner = dynamic(() => import('./PingMapInner'), {
   ),
 });
 
-export default function PingMap({ pings }: { pings: Ping[] }) {
+export default function PingMap({ pings }: { pings: PingWithSeq[] }) {
   return <PingMapInner pings={pings} />;
 }
