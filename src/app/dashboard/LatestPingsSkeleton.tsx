@@ -1,11 +1,7 @@
-import { Skeleton } from '@/components/ui/skeleton';
-
 export default function LatestPingsSkeleton() {
   return (
-    <div className="space-y-3">
-      {[0, 1, 2].map((i) => (
-        <Skeleton key={i} className="h-20 w-full rounded-lg bg-zinc-800" />
-      ))}
+    <div className="relative w-full h-[50vh] sm:h-[480px] rounded-lg border border-zinc-800 bg-zinc-900 flex items-center justify-center">
+      <p className="text-zinc-500 text-sm font-mono animate-pulse">Acquiring signal…</p>
     </div>
   );
 }

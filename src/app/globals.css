@@ -128,3 +128,7 @@
     @apply font-sans;
   }
 }
+
+.leaflet-container {
+  background: #09090b;
+}
