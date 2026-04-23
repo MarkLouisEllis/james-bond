@@ -2,6 +2,10 @@
 
 A secure web application where authenticated users can send pings with random coordinates, view their ping history, and respond to pings to form a trail.
 
+## Deployed link
+
+https://james-bond-pings.vercel.app/
+
 ## Tech Stack
 
 - **Framework:** Next.js 15 (App Router, TypeScript)
