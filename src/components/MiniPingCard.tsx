@@ -15,7 +15,9 @@ export default function MiniPingCard({ seqNum, latitude, longitude, createdAt, l
       <p className="font-mono text-white">
         {Number(latitude).toFixed(6)}, {Number(longitude).toFixed(6)}
       </p>
-      <p className="text-xs text-zinc-500">{new Date(createdAt).toLocaleString()}</p>
+      <p className="text-xs text-zinc-500">
+        {new Date(createdAt).toISOString().replace('T', ' ').slice(0, 19)} UTC
+      </p>
     </div>
   );
 }
