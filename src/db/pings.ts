@@ -55,6 +55,35 @@ export async function getPingById(id: number, userId: string): Promise<Ping | nu
   return ping;
 }
 
+export async function getLatestTrailForUser(userId: string, limit = 5): Promise<PingWithSeq[]> {
+  const [latest] = await db
+    .select()
+    .from(pings)
+    .where(eq(pings.userId, userId))
+    .orderBy(desc(pings.createdAt))
+    .limit(1);
+  if (!latest) return [];
+
+  const trail: Ping[] = [latest];
+  let current: Ping = latest;
+
+  while (trail.length < limit && current.parentId != null) {
+    const [parent] = await db.select().from(pings).where(eq(pings.id, current.parentId)).limit(1);
+    if (!parent || parent.userId !== userId) break;
+    trail.push(parent);
+    current = parent;
+  }
+
+  const allIds = await db
+    .select({ id: pings.id })
+    .from(pings)
+    .where(eq(pings.userId, userId))
+    .orderBy(pings.id);
+  const idToSeq = new Map(allIds.map((r, i) => [r.id, i + 1]));
+
+  return trail.map((ping) => ({ ...ping, seqNum: idToSeq.get(ping.id) ?? 0 })).reverse();
+}
+
 export async function getLatestPingForUser(userId: string): Promise<PingWithSeq | null> {
   const [ping] = await db
     .select()
