@@ -9,7 +9,7 @@ export default async function DashboardPage() {
   const name = user?.firstName ?? 'Agent';
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
+    <div className="min-h-screen">
       <Nav />
 
       <div className="px-4 sm:px-8 pt-10 pb-4">

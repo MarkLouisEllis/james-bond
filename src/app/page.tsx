@@ -10,17 +10,7 @@ export default async function HomePage() {
   }
 
   return (
-    <main className="relative flex min-h-screen flex-col items-center justify-center bg-zinc-950 px-6 text-center overflow-hidden">
-      {/* Subtle grid overlay */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          backgroundImage:
-            'linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px)',
-          backgroundSize: '48px 48px',
-        }}
-      />
-
+    <main className="relative flex min-h-screen flex-col items-center justify-center px-6 text-center overflow-hidden">
       {/* Radar pulse rings */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <span
