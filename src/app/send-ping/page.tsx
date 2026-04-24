@@ -1,7 +1,7 @@
 import Nav from '@/components/Nav';
 import { requireUserId } from '@/lib/auth';
 import { getLatestTrailForUser } from '@/db/pings';
-import SendPingClient from './SendPingClient';
+import SendPingClient from './_components/SendPingClient';
 
 export default async function SendPingPage() {
   const userId = await requireUserId();

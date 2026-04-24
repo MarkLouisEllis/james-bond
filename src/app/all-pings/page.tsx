@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import Nav from '@/components/Nav';
-import PingsTable from './PingsTable';
-import PingsTableSkeleton from './PingsTableSkeleton';
+import PingsTable from './_components/PingsTable';
+import PingsTableSkeleton from './_components/PingsTableSkeleton';
 
 export default function AllPingsPage() {
   return (

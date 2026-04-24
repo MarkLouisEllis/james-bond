@@ -1,8 +1,8 @@
 import { Suspense } from 'react';
 import { currentUser } from '@clerk/nextjs/server';
 import Nav from '@/components/Nav';
-import LatestPings from './LatestPings';
-import LatestPingsSkeleton from './LatestPingsSkeleton';
+import LatestPings from './_components/LatestPings';
+import LatestPingsSkeleton from './_components/LatestPingsSkeleton';
 
 export default async function DashboardPage() {
   const user = await currentUser();
