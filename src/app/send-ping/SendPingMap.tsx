@@ -8,7 +8,13 @@ function toXY(lat: number, lng: number): [number, number] {
   return [x, y];
 }
 
-export default function SendPingMap({ pings }: { pings: PingResult[] }) {
+type Props = {
+  pings: PingResult[];
+  hoveredId: number | null;
+  onHoverChange: (id: number | null) => void;
+};
+
+export default function SendPingMap({ pings, hoveredId, onHoverChange }: Props) {
   return (
     <div className="relative w-full overflow-hidden">
       <Image
@@ -45,10 +51,29 @@ export default function SendPingMap({ pings }: { pings: PingResult[] }) {
         )}
         {pings.map((ping) => {
           const [x, y] = toXY(ping.latitude, ping.longitude);
+          const isHovered = hoveredId === ping.id;
           return (
-            <g key={ping.id} filter="url(#dot-glow)">
-              <circle cx={x} cy={y} r="1.4" fill={PING_COLOR} fillOpacity="0.25" />
-              <circle cx={x} cy={y} r="0.7" fill={PING_COLOR} stroke="white" strokeWidth="0.15" />
+            <g
+              key={ping.id}
+              filter="url(#dot-glow)"
+              onMouseEnter={() => onHoverChange(ping.id)}
+              onMouseLeave={() => onHoverChange(null)}
+            >
+              <circle
+                cx={x}
+                cy={y}
+                r={isHovered ? 2.2 : 1.4}
+                fill={PING_COLOR}
+                fillOpacity={isHovered ? 0.45 : 0.25}
+              />
+              <circle
+                cx={x}
+                cy={y}
+                r={isHovered ? 1.1 : 0.7}
+                fill={PING_COLOR}
+                stroke="white"
+                strokeWidth="0.15"
+              />
             </g>
           );
         })}

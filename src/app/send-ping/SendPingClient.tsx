@@ -19,6 +19,7 @@ export default function SendPingClient({ initialTrail }: { initialTrail: PingRes
   const [switchSonar, setSwitchSonar] = useState(false);
 
   const currentLatest = trail.at(-1) ?? null;
+  const [hoveredId, setHoveredId] = useState<number | null>(null);
 
   function handleSwitchChange(checked: boolean) {
     setReplyMode(checked);
@@ -66,7 +67,7 @@ export default function SendPingClient({ initialTrail }: { initialTrail: PingRes
           <div className="px-4 py-3 border-b border-zinc-800 flex justify-center">
             <StatusLine loading={loading} confirmed={confirmed} />
           </div>
-          <SendPingMap pings={trail} />
+          <SendPingMap pings={trail} hoveredId={hoveredId} onHoverChange={setHoveredId} />
         </div>
 
         <div className="flex items-center justify-between">
@@ -114,7 +115,7 @@ export default function SendPingClient({ initialTrail }: { initialTrail: PingRes
 
       {/* Right panel */}
       <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 mt-8 lg:mt-0 lg:overflow-y-auto lg:min-h-0">
-        <TrailPanel trail={trail} />
+        <TrailPanel trail={trail} hoveredId={hoveredId} onHoverChange={setHoveredId} />
       </div>
     </div>
   );

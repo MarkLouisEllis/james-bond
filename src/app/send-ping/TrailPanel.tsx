@@ -27,7 +27,13 @@ function DownArrow() {
   );
 }
 
-export default function TrailPanel({ trail }: { trail: PingResult[] }) {
+type Props = {
+  trail: PingResult[];
+  hoveredId: number | null;
+  onHoverChange: (id: number | null) => void;
+};
+
+export default function TrailPanel({ trail, hoveredId, onHoverChange }: Props) {
   return (
     <div className="flex flex-col gap-3">
       <h2 className="text-xs font-mono text-zinc-400 uppercase tracking-widest">
@@ -40,13 +46,19 @@ export default function TrailPanel({ trail }: { trail: PingResult[] }) {
         <div className="flex flex-col">
           {trail.map((ping, i) => (
             <div key={ping.id}>
-              <MiniPingCard
-                seqNum={ping.seqNum}
-                latitude={ping.latitude}
-                longitude={ping.longitude}
-                createdAt={ping.createdAt}
-                label={ping.parentId ? 'Reply' : 'Ping'}
-              />
+              <div
+                onMouseEnter={() => onHoverChange(ping.id)}
+                onMouseLeave={() => onHoverChange(null)}
+                className={`rounded-lg transition-all duration-150 ${hoveredId === ping.id ? 'ring-1 ring-red-500/60' : ''}`}
+              >
+                <MiniPingCard
+                  seqNum={ping.seqNum}
+                  latitude={ping.latitude}
+                  longitude={ping.longitude}
+                  createdAt={ping.createdAt}
+                  label={ping.parentId ? 'Reply' : 'Ping'}
+                />
+              </div>
               {i < trail.length - 1 && <DownArrow />}
             </div>
           ))}
