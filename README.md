@@ -27,7 +27,7 @@ https://james-bond-pings.vercel.app/
 
 ```bash
 git clone <repo-url>
-cd james-bond-ping
+cd james-bond
 pnpm install
 ```
 
