@@ -3,6 +3,16 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import StatusLine from './StatusLine';
 import TrailPanel from './TrailPanel';
 import SendPingMap from './SendPingMap';
@@ -17,9 +27,18 @@ export default function SendPingClient({ initialTrail }: { initialTrail: PingRes
   const [confirmed, setConfirmed] = useState(false);
   const [pinging, setPinging] = useState(false);
   const [switchSonar, setSwitchSonar] = useState(false);
+  const [showWarning, setShowWarning] = useState(false);
 
   const currentLatest = trail.at(-1) ?? null;
   const [hoveredId, setHoveredId] = useState<number | null>(null);
+
+  function handleSendClick() {
+    if (!replyMode && trail.length >= 2) {
+      setShowWarning(true);
+      return;
+    }
+    sendPing();
+  }
 
   function handleSwitchChange(checked: boolean) {
     setReplyMode(checked);
@@ -82,7 +101,7 @@ export default function SendPingClient({ initialTrail }: { initialTrail: PingRes
               style={{ animationDuration: '4.5s', animationDelay: '1s' }}
             />
             <div className="relative z-10 inline-flex">
-              <Button onClick={sendPing} disabled={loading} className="w-40 cursor-pointer">
+              <Button onClick={handleSendClick} disabled={loading} className="w-40 cursor-pointer">
                 {loading ? 'Sending…' : replyMode ? 'Send Reply' : 'Send Ping'}
               </Button>
               {pinging && (
@@ -112,6 +131,30 @@ export default function SendPingClient({ initialTrail }: { initialTrail: PingRes
 
         {error && <p className="text-red-400 text-sm">{error}</p>}
       </div>
+
+      {/* Trail termination warning */}
+      <AlertDialog open={showWarning} onOpenChange={setShowWarning}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Terminate current trail?</AlertDialogTitle>
+            <AlertDialogDescription>
+              You are about to terminate the current trail. A new ping will start a fresh mission.
+              Do you want to proceed?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                setShowWarning(false);
+                sendPing();
+              }}
+            >
+              Proceed
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Right panel */}
       <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 mt-8 lg:mt-0 lg:overflow-y-auto lg:min-h-0">
