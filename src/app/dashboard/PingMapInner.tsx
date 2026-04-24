@@ -5,8 +5,7 @@ import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-lea
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import type { PingWithSeq } from '@/db/pings';
-
-const COLORS = ['#22d3ee', '#86efac', '#f472b6'];
+import { MARKER_COLORS } from '@/lib/constants';
 
 const WORLD_BOUNDS = L.latLngBounds(L.latLng(-85, -180), L.latLng(85, 180));
 
@@ -128,7 +127,7 @@ export default function PingMapInner({ pings }: { pings: PingWithSeq[] }) {
           <Marker
             key={ping.id}
             position={[Number(ping.latitude), Number(ping.longitude)]}
-            icon={createGlowIcon(COLORS[i % COLORS.length])}
+            icon={createGlowIcon(MARKER_COLORS[i % MARKER_COLORS.length])}
           />
         ))}
       </MapContainer>
@@ -142,7 +141,7 @@ export default function PingMapInner({ pings }: { pings: PingWithSeq[] }) {
           const marker = markerPixels[ping.id];
           const endpoint = cardEndpoints[ping.id];
           if (!marker || !endpoint) return null;
-          const color = COLORS[i % COLORS.length];
+          const color = MARKER_COLORS[i % MARKER_COLORS.length];
           const isHovered = hoveredId === ping.id;
           const opacity = isHovered ? 0.9 : hoveredId !== null ? 0.15 : 0.5;
           return (
@@ -178,7 +177,7 @@ export default function PingMapInner({ pings }: { pings: PingWithSeq[] }) {
       {/* Overlay cards — top-right corner */}
       <div className="absolute top-3 right-3 flex flex-col gap-2" style={{ zIndex: 1000 }}>
         {pings.map((ping, i) => {
-          const color = COLORS[i % COLORS.length];
+          const color = MARKER_COLORS[i % MARKER_COLORS.length];
           const isHovered = hoveredId === ping.id;
           return (
             <div

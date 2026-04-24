@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { PING_COLOR } from '@/lib/constants';
 import type { PingResult } from './types';
 
 function toXY(lat: number, lng: number): [number, number] {
@@ -37,7 +38,7 @@ export default function SendPingMap({ pings }: { pings: PingResult[] }) {
           <polyline
             points={pings.map((p) => toXY(p.latitude, p.longitude).join(',')).join(' ')}
             fill="none"
-            stroke="#ef4444"
+            stroke={PING_COLOR}
             strokeWidth="0.35"
             strokeOpacity="0.5"
           />
@@ -46,8 +47,8 @@ export default function SendPingMap({ pings }: { pings: PingResult[] }) {
           const [x, y] = toXY(ping.latitude, ping.longitude);
           return (
             <g key={ping.id} filter="url(#dot-glow)">
-              <circle cx={x} cy={y} r="1.4" fill="#ef4444" fillOpacity="0.25" />
-              <circle cx={x} cy={y} r="0.7" fill="#ef4444" stroke="white" strokeWidth="0.15" />
+              <circle cx={x} cy={y} r="1.4" fill={PING_COLOR} fillOpacity="0.25" />
+              <circle cx={x} cy={y} r="0.7" fill={PING_COLOR} stroke="white" strokeWidth="0.15" />
             </g>
           );
         })}

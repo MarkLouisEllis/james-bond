@@ -1,6 +1,7 @@
 import { db } from './index';
 import { pings, type Ping } from './schema';
 import { desc, eq, count } from 'drizzle-orm';
+import { TRAIL_LIMIT } from '@/lib/constants';
 
 export type PingWithSeq = Ping & { seqNum: number };
 
@@ -55,7 +56,10 @@ export async function getPingById(id: number, userId: string): Promise<Ping | nu
   return ping;
 }
 
-export async function getLatestTrailForUser(userId: string, limit = 5): Promise<PingWithSeq[]> {
+export async function getLatestTrailForUser(
+  userId: string,
+  limit = TRAIL_LIMIT
+): Promise<PingWithSeq[]> {
   const [latest] = await db
     .select()
     .from(pings)

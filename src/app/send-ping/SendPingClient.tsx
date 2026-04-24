@@ -6,6 +6,7 @@ import { Switch } from '@/components/ui/switch';
 import StatusLine from './StatusLine';
 import TrailPanel from './TrailPanel';
 import SendPingMap from './SendPingMap';
+import { TRAIL_LIMIT } from '@/lib/constants';
 import { type PingResult } from './types';
 
 export default function SendPingClient({ initialTrail }: { initialTrail: PingResult[] }) {
@@ -42,7 +43,7 @@ export default function SendPingClient({ initialTrail }: { initialTrail: PingRes
       }
       const data: PingResult = await res.json();
       if (replyMode) {
-        setTrail((prev) => [...prev, data].slice(-5));
+        setTrail((prev) => [...prev, data].slice(-TRAIL_LIMIT));
       } else {
         setTrail([data]);
       }
